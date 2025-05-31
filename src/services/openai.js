@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import ngoService from './ngoService';
+import { logError, addBreadcrumb } from '../utils/sentry';
 
 class OpenAIService {
   constructor() {
@@ -17,6 +18,14 @@ class OpenAIService {
     
     // Enhanced location prompt with GPS data
     const locationPrompt = this.generateLocationPrompt(locationData, hasGPS);
+    
+    // Add breadcrumb for analysis start
+    addBreadcrumb(
+      'OpenAI: Starting message analysis',
+      'openai',
+      'info',
+      { hasGPS, messageLength: message.length }
+    );
     
     const systemPrompt = `You are Curio, an expert AI assistant specializing in animal rescue situations in India. 
 
@@ -145,8 +154,25 @@ Remember: Always provide accurate, helpful guidance while prioritizing animal we
       let analysis;
       try {
         analysis = JSON.parse(completion);
+        
+        // Add success breadcrumb
+        addBreadcrumb(
+          'OpenAI: Analysis completed successfully',
+          'openai',
+          'info',
+          { isRescueSituation: analysis.isRescueSituation }
+        );
+        
       } catch (parseError) {
         console.warn('JSON parsing failed, extracting from response');
+        
+        // Log parsing error to Sentry
+        logError(parseError, {
+          context: 'openai_json_parsing',
+          response: completion,
+          message: message.substring(0, 100) // First 100 chars only
+        });
+        
         analysis = this.extractJSONFromResponse(completion);
       }
 
@@ -162,6 +188,17 @@ Remember: Always provide accurate, helpful guidance while prioritizing animal we
 
     } catch (error) {
       console.error('OpenAI analysis error:', error);
+      
+      // Log comprehensive error to Sentry
+      logError(error, {
+        context: 'openai_analysis_failure',
+        hasGPS,
+        messageLength: message.length,
+        locationData: locationData ? 'present' : 'absent',
+        errorType: error.constructor.name,
+        apiKey: this.apiKey ? 'present' : 'missing'
+      });
+      
       return this.getErrorFallback();
     }
   }

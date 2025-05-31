@@ -57,6 +57,7 @@
 .header-nav {
   display: flex;
   gap: 0.5rem;
+  margin-left: auto;
 }
 
 .nav-button {
@@ -131,7 +132,7 @@
 .app-main {
   flex: 1;
   display: flex;
-  overflow: hidden;
+  overflow: auto;
   width: 100%;
   max-width: none;
 }

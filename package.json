@@ -12,6 +12,8 @@
     "test:playwright": "npx playwright test"
   },
   "dependencies": {
+    "@sentry/react": "^9.24.0",
+    "@sentry/tracing": "^7.120.3",
     "axios": "^1.6.0",
     "openai": "^4.20.1",
     "react": "^18.2.0",
