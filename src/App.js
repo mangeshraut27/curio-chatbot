@@ -1,3 +1,21 @@
+/**
+ * Curio App - Main Application Component
+ * 
+ * The root component for the Curio AI-powered animal rescue chatbot application.
+ * Manages global application state, navigation, emergency contacts initialization,
+ * and provides the main layout structure.
+ * 
+ * Features:
+ * - Multi-page navigation (Chat, Reports, About, FAQ)
+ * - Location-based emergency contacts auto-initialization
+ * - Global state management for analysis and contacts
+ * - Error boundary integration with Sentry
+ * - Responsive layout with professional header
+ * 
+ * @author Curio Development Team
+ * @version 1.0.0
+ */
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ChatBot from './components/ChatBot';
@@ -6,17 +24,48 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { addBreadcrumb, logMessage } from './utils/sentry';
 import emergencyContactsService from './services/emergencyContactsService';
 
+/**
+ * Main App Component
+ * 
+ * Central component that orchestrates the entire Curio application.
+ * Handles navigation, emergency contacts initialization, and global state.
+ * 
+ * @returns {JSX.Element} Main application layout
+ */
 function App() {
+  /** @type {[Object|null, Function]} Current analysis state from ChatBot */
   const [currentAnalysis, setCurrentAnalysis] = useState(null);
-  const [currentView, setCurrentView] = useState('chat'); // New state for navigation
+  
+  /** @type {[string, Function]} Current view/page state for navigation */
+  const [currentView, setCurrentView] = useState('chat'); // chat, reports, about, faq
+  
+  /** @type {[Object|null, Function]} Emergency contacts data state */
   const [emergencyContacts, setEmergencyContacts] = useState(null);
-  const [locationStatus, setLocationStatus] = useState('checking'); // checking, granted, denied, error
+  
+  /** @type {[string, Function]} Location detection status state */
+  const [locationStatus, setLocationStatus] = useState('checking'); // checking, granted, denied, estimated, error
 
+  /**
+   * Initialize emergency contacts on app load
+   * 
+   * Effect hook that runs once when the app starts to automatically
+   * detect user location and fetch relevant emergency contacts.
+   */
   useEffect(() => {
     // Initialize emergency contacts on app load
     initializeEmergencyContacts();
   }, []);
 
+  /**
+   * Initialize emergency contacts with location detection
+   * 
+   * Attempts to get user's GPS location and fetch AI-generated emergency
+   * contacts relevant to their area. Handles various location states and
+   * provides appropriate fallbacks.
+   * 
+   * @async
+   * @function
+   */
   const initializeEmergencyContacts = async () => {
     try {
       addBreadcrumb(
@@ -54,7 +103,7 @@ function App() {
       console.error('Failed to initialize emergency contacts:', error);
       setLocationStatus('error');
       
-      // Set basic fallback
+      // Set basic fallback contacts for critical situations
       setEmergencyContacts({
         emergencyContacts: [
           {
@@ -68,13 +117,22 @@ function App() {
     }
   };
 
-  // Handle emergency contacts refresh
+  /**
+   * Handle emergency contacts refresh
+   * 
+   * Manually refreshes emergency contacts with current location data.
+   * Useful when user changes location or wants updated contact information.
+   * 
+   * @async
+   * @function
+   */
   const refreshEmergencyContacts = async () => {
     try {
       setLocationStatus('checking');
       const refreshedContacts = await emergencyContactsService.refreshEmergencyContacts();
       setEmergencyContacts(refreshedContacts);
       
+      // Update location status based on refresh results
       if (refreshedContacts?.location?.accuracy === 'GPS') {
         setLocationStatus('granted');
       } else {
@@ -87,17 +145,41 @@ function App() {
     }
   };
 
+  /**
+   * Handle analysis updates from ChatBot component
+   * 
+   * Receives analysis results from the ChatBot and updates global state.
+   * Used for cross-component communication and state persistence.
+   * 
+   * @param {Object} analysis - Analysis result from ChatBot
+   */
   const handleAnalysisUpdate = (analysis) => {
     setCurrentAnalysis(analysis);
   };
 
+  /**
+   * Handle triage updates from ChatBot component
+   * 
+   * Processes triage-specific updates for enhanced rescue coordination.
+   * Can be extended for additional triage-specific functionality.
+   * 
+   * @param {Object} analysis - Triage analysis data
+   */
   const handleTriageUpdate = (analysis) => {
     // Additional triage-specific updates can be handled here
     console.log('Triage Update:', analysis);
   };
 
+  /**
+   * Handle navigation between different app views
+   * 
+   * Updates the current view state and logs navigation events for monitoring.
+   * Supports chat, reports, about, and FAQ pages.
+   * 
+   * @param {string} view - Target view name ('chat'|'reports'|'about'|'faq')
+   */
   const handleNavigation = (view) => {
-    // Add breadcrumb for navigation
+    // Add breadcrumb for navigation tracking
     addBreadcrumb(
       `Navigation: Switched to ${view}`,
       'navigation',
@@ -108,7 +190,12 @@ function App() {
     setCurrentView(view);
   };
 
-  // Test Sentry integration (only in development)
+  /**
+   * Test Sentry integration (development only)
+   * 
+   * Utility function for testing error tracking and monitoring in development.
+   * Helps verify that Sentry is properly configured and receiving events.
+   */
   const testSentry = () => {
     if (process.env.NODE_ENV === 'development') {
       addBreadcrumb('Testing Sentry integration', 'test', 'info');
@@ -117,10 +204,19 @@ function App() {
     }
   };
 
+  /**
+   * Render the current view based on navigation state
+   * 
+   * Dynamic component rendering based on the current view state.
+   * Each view provides different functionality within the app.
+   * 
+   * @returns {JSX.Element} Current view component
+   */
   const renderCurrentView = () => {
     switch (currentView) {
       case 'reports':
         return <Reports />;
+        
       case 'about':
         return (
           <div style={{ padding: '40px', textAlign: 'center', color: '#333' }}>
@@ -170,6 +266,7 @@ function App() {
               </button>
             </div>
 
+            {/* Development-only Sentry test button */}
             {process.env.NODE_ENV === 'development' && (
               <button 
                 onClick={testSentry}
@@ -188,11 +285,13 @@ function App() {
             )}
           </div>
         );
+        
       case 'faq':
         return (
           <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
             <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>❓ Frequently Asked Questions</h2>
             <div style={{ display: 'grid', gap: '20px' }}>
+              {/* FAQ items with comprehensive information */}
               <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                 <h4>How does Curio help with animal rescue?</h4>
                 <p>Curio analyzes your situation description, determines urgency levels, provides immediate care guidance, and connects you with appropriate local NGOs and veterinarians.</p>
@@ -212,6 +311,7 @@ function App() {
             </div>
           </div>
         );
+        
       case 'chat':
       default:
         return (
@@ -228,7 +328,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* Professional Header */}
+      {/* Professional Header with Navigation */}
       <header className="app-header">
         <div className="header-content">
           <div className="header-left">
@@ -239,6 +339,7 @@ function App() {
             <span className="app-subtitle">AI-Powered Animal Rescue Assistant</span>
           </div>
           
+          {/* Navigation Menu */}
           <nav className="header-nav">
             <button 
               className={`nav-button ${currentView === 'chat' ? 'active' : ''}`}

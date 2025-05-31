@@ -1,3 +1,23 @@
+/**
+ * ChatBot Component - Main Chat Interface
+ * 
+ * Core component providing the intelligent chat interface for animal rescue assistance.
+ * Integrates AI analysis, location services, emergency contacts, and triage functionality
+ * to deliver comprehensive animal rescue support.
+ * 
+ * Key Features:
+ * - Real-time AI-powered message analysis
+ * - Automatic GPS location detection and integration
+ * - Smart follow-up question generation
+ * - Emergency contact display and management
+ * - Triage panel with urgency indicators
+ * - NGO recommendations with distance calculations
+ * - Conversation history with context awareness
+ * 
+ * @author Curio Development Team
+ * @version 1.0.0
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatBot.css';
 import Message from './Message';
@@ -7,6 +27,25 @@ import NGOPanel from './NGOPanel';
 import openaiService from '../services/openai';
 import locationService from '../services/locationService';
 
+/**
+ * ChatBot Component Props
+ * @typedef {Object} ChatBotProps
+ * @property {Function} onAnalysisUpdate - Callback for analysis updates
+ * @property {Function} onTriageUpdate - Callback for triage updates  
+ * @property {Object|null} emergencyContacts - Emergency contacts data
+ * @property {string} locationStatus - Location detection status
+ * @property {Function} onRefreshContacts - Callback to refresh contacts
+ */
+
+/**
+ * Main ChatBot Component
+ * 
+ * Provides the primary chat interface with AI-powered animal rescue assistance.
+ * Manages conversation flow, location detection, and emergency response coordination.
+ * 
+ * @param {ChatBotProps} props - Component props
+ * @returns {JSX.Element} ChatBot interface
+ */
 const ChatBot = ({ 
   onAnalysisUpdate, 
   onTriageUpdate, 
@@ -14,6 +53,7 @@ const ChatBot = ({
   locationStatus, 
   onRefreshContacts 
 }) => {
+  /** @type {[Array, Function]} Chat messages array state */
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -23,15 +63,36 @@ const ChatBot = ({
     }
   ]);
   
+  /** @type {[string, Function]} Current input text state */
   const [inputText, setInputText] = useState('');
+  
+  /** @type {[boolean, Function]} Loading state for API calls */
   const [isLoading, setIsLoading] = useState(false);
+  
+  /** @type {[Object|null, Function]} Current AI analysis result */
   const [currentAnalysis, setCurrentAnalysis] = useState(null);
+  
+  /** @type {[boolean, Function]} Typing indicator state */
   const [isTyping, setIsTyping] = useState(false);
+  
+  /** @type {[Object|null, Function]} Report data state (legacy) */
   const [reportData, setReportData] = useState(null);
+  
+  /** @type {[Object|null, Function]} User location data */
   const [userLocation, setUserLocation] = useState(null);
+  
+  /** @type {[boolean, Function]} Location permission request state */
   const [locationPermissionAsked, setLocationPermissionAsked] = useState(false);
+  
+  /** @type {React.RefObject} Reference to messages container end for auto-scroll */
   const messagesEndRef = useRef(null);
 
+  /**
+   * Scroll to bottom of messages container
+   * 
+   * Provides smooth scrolling to the latest message with fallback for test environments.
+   * Handles cases where smooth scrolling is not supported.
+   */
   const scrollToBottom = () => {
     if (messagesEndRef.current && typeof messagesEndRef.current.scrollIntoView === 'function') {
       try {
@@ -43,24 +104,37 @@ const ChatBot = ({
     }
   };
 
+  /**
+   * Auto-scroll effect
+   * 
+   * Automatically scrolls to bottom when new messages are added or typing indicator changes.
+   */
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Request location on first message (regardless of length)
+  /**
+   * Request location permission and data if needed
+   * 
+   * Handles location permission requests with user-friendly messaging.
+   * Only requests location once per session to avoid annoying users.
+   * Provides fallback messaging for denied permissions.
+   * 
+   * @returns {Promise<Object|null>} Location data or null if unavailable
+   */
   const requestLocationIfNeeded = async () => {
     console.log('requestLocationIfNeeded called', {
       locationPermissionAsked,
       hasUserLocation: !!userLocation
     });
     
-    // If we already have location data, return it
+    // Return cached location if available
     if (userLocation) {
       console.log('Returning cached location');
       return userLocation;
     }
     
-    // Only request location if we haven't asked before
+    // Skip if permission already requested this session
     if (locationPermissionAsked) {
       console.log('Location permission already asked, returning null');
       return null;
@@ -119,6 +193,15 @@ const ChatBot = ({
     return null;
   };
 
+  /**
+   * Handle NGO contact interactions
+   * 
+   * Provides one-click calling and emailing functionality for NGO contacts.
+   * Formats contact information appropriately for different contact methods.
+   * 
+   * @param {Object} ngo - NGO contact information
+   * @param {string} method - Contact method ('call' or 'email')
+   */
   const handleContactNGO = (ngo, method) => {
     if (method === 'call' && ngo.phone) {
       window.open(`tel:${ngo.phone}`);
@@ -129,10 +212,19 @@ const ChatBot = ({
     }
   };
 
+  /**
+   * Generate smart follow-up messages based on analysis
+   * 
+   * Creates contextual follow-up messages based on the AI analysis results.
+   * Provides additional guidance, clarifications, and reminders as needed.
+   * 
+   * @param {Object} analysis - AI analysis results
+   * @returns {Array<Object>} Array of follow-up message objects with delays
+   */
   const generateSmartFollowUp = (analysis) => {
     const followUps = [];
 
-    // Phase 2: Smart location follow-up (only if no GPS location)
+    // Smart location follow-up (only if no GPS location)
     if (analysis.locationAnalysis?.needsMoreDetail && !userLocation) {
       followUps.push({
         text: `Could you provide more specific location details? ${analysis.locationAnalysis.suggestedQuestions[0] || 'What landmarks or cross streets are nearby?'}`,
@@ -148,7 +240,7 @@ const ChatBot = ({
       });
     }
 
-    // Phase 2: Urgency-based alerts
+    // Urgency-based alerts
     if (analysis.urgencyLevel === 'high') {
       followUps.push({
         text: `⚠️ This appears to be a HIGH URGENCY situation. Time is critical - please contact the recommended NGO immediately if you haven't already.`,
@@ -156,7 +248,7 @@ const ChatBot = ({
       });
     }
 
-    // Phase 2: Consistency checks
+    // Consistency checks
     if (!analysis.consistencyCheck?.isConsistent) {
       followUps.push({
         text: `I noticed some details that might need clarification: ${analysis.consistencyCheck.conflictingInfo.join(', ')}. Could you help me understand this better?`,
@@ -164,7 +256,7 @@ const ChatBot = ({
       });
     }
 
-    // Phase 3: NGO availability reminder with distance info
+    // NGO availability reminder with distance info
     if (analysis.ngoRecommendations?.found && analysis.urgencyLevel !== 'high') {
       const nearestNGO = analysis.ngoRecommendations.ngos[0];
       const distanceInfo = nearestNGO?.distanceText ? ` The nearest one is ${nearestNGO.distanceText}.` : '';
@@ -178,6 +270,15 @@ const ChatBot = ({
     return followUps;
   };
 
+  /**
+   * Handle message sending and AI analysis
+   * 
+   * Main message processing function that handles user input, location detection,
+   * AI analysis, and response generation. Orchestrates the entire conversation flow.
+   * 
+   * @async
+   * @function
+   */
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
@@ -275,7 +376,7 @@ Original user message: "${inputText}"`;
         onTriageUpdate(analysis);
       }
 
-      // Phase 2: Generate smart follow-ups
+      // Generate smart follow-ups
       const followUps = generateSmartFollowUp(analysis);
       followUps.forEach(({ text, delay }) => {
         setTimeout(() => {
@@ -305,6 +406,14 @@ Original user message: "${inputText}"`;
     }
   };
 
+  /**
+   * Handle Enter key press for message sending
+   * 
+   * Allows users to send messages by pressing Enter (without Shift).
+   * Shift+Enter creates new lines for multi-line messages.
+   * 
+   * @param {KeyboardEvent} e - Keyboard event
+   */
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -312,6 +421,14 @@ Original user message: "${inputText}"`;
     }
   };
 
+  /**
+   * Handle quick action button clicks
+   * 
+   * Processes various quick action buttons from the sidebar.
+   * Provides shortcuts for common rescue-related actions.
+   * 
+   * @param {string} action - Action type identifier
+   */
   const handleActionClick = (action) => {
     switch (action) {
       case 'find-vets':
@@ -346,6 +463,12 @@ Original user message: "${inputText}"`;
     }
   };
 
+  /**
+   * Handle location help requests
+   * 
+   * Provides additional guidance when users need help with location specification.
+   * Generates helpful tips for providing better location information.
+   */
   const handleLocationHelp = () => {
     const locationHelpMessage = {
       id: Date.now(),
@@ -358,8 +481,14 @@ Original user message: "${inputText}"`;
     setMessages(prev => [...prev, locationHelpMessage]);
   };
 
+  /**
+   * Handle new conversation reset
+   * 
+   * Resets the entire conversation state and clears AI service history.
+   * Useful for starting fresh rescue consultations.
+   */
   const handleNewConversation = () => {
-    // Phase 2: Clear conversation history in OpenAI service
+    // Clear conversation history in OpenAI service
     openaiService.clearHistory();
     setCurrentAnalysis(null);
     setReportData(null);
@@ -379,7 +508,7 @@ Original user message: "${inputText}"`;
         <div className="chat-container">
           <div className="chat-header">
             <h1>Curio Chat Assistant</h1>
-            {/* Phase 2: Smart Status Indicator */}
+            {/* Smart Status Indicator */}
             {currentAnalysis && currentAnalysis.isRescueSituation && (
               <div className="triage-status-header">
                 <span className={`urgency-indicator-small ${currentAnalysis.urgencyLevel}`}>
@@ -400,6 +529,7 @@ Original user message: "${inputText}"`;
           
           <div className="chat-content">
             <div className="messages-area">
+              {/* Animated Robot Illustration */}
               <div className="robot-illustration">
                 <div className="robot">
                   <div className="robot-head">
@@ -431,6 +561,7 @@ Original user message: "${inputText}"`;
                 </div>
               </div>
               
+              {/* Messages Container */}
               <div className="messages-container">
                 {messages.map((message) => (
                   <Message 
@@ -440,7 +571,7 @@ Original user message: "${inputText}"`;
                   />
                 ))}
                 
-                {/* Phase 2: Enhanced Triage Panel - Integrated seamlessly */}
+                {/* Integrated Triage Panel */}
                 {currentAnalysis && currentAnalysis.isRescueSituation && (
                   <TriagePanel 
                     analysis={currentAnalysis} 
@@ -448,8 +579,7 @@ Original user message: "${inputText}"`;
                   />
                 )}
                 
-                {/* Phase 3: NGO Recommendations Panel - Moved to Message component */}
-                
+                {/* Typing Indicator */}
                 {isTyping && (
                   <div className="typing-indicator">
                     <div className="typing-dots">
@@ -464,6 +594,7 @@ Original user message: "${inputText}"`;
               </div>
             </div>
             
+            {/* Input Section */}
             <div className="input-section">
               <div className="input-container">
                 <textarea
@@ -489,7 +620,7 @@ Original user message: "${inputText}"`;
                 </button>
               </div>
               
-              {/* Phase 2: Discrete status indicator */}
+              {/* Phase Status Indicator */}
               <div className="phase-status-discrete">
                 <span className="phase-badge-small">
                   🧠 Phase 3: Smart Triage + NGO Active
@@ -500,6 +631,7 @@ Original user message: "${inputText}"`;
         </div>
       </div>
       
+      {/* Sidebar with Emergency Contacts and Actions */}
       <Sidebar 
         reportData={reportData} 
         analysis={currentAnalysis}

@@ -1,22 +1,70 @@
+/**
+ * Emergency Contacts Service
+ * 
+ * Provides location-based emergency contact management for animal rescue situations.
+ * Features automatic GPS location detection, intelligent caching, and AI-generated
+ * emergency contacts tailored to the user's location.
+ * 
+ * Key Features:
+ * - Auto-initialization on app load with GPS location detection
+ * - Smart caching system with 30-minute expiry
+ * - Location change detection (5km threshold for refresh)
+ * - Manual location update capability
+ * - Comprehensive error handling with Sentry logging
+ * 
+ * @author Curio Development Team
+ * @version 1.0.0
+ */
+
 import openAIService from './openai';
 import locationService from './locationService';
 import { logError, addBreadcrumb } from '../utils/sentry';
 
+/**
+ * EmergencyContactsService Class
+ * 
+ * Manages emergency contacts for animal rescue situations with location intelligence.
+ * Provides caching, auto-refresh, and fallback mechanisms.
+ */
 class EmergencyContactsService {
   constructor() {
+    /** @type {Object|null} Cached emergency contacts data */
     this.cachedContacts = null;
+    
+    /** @type {Object|null} Last location fetch metadata */
     this.lastLocationFetch = null;
+    
+    /** @type {number} Cache expiry time in milliseconds (30 minutes) */
     this.cacheExpiryTime = 30 * 60 * 1000; // 30 minutes
+    
+    /** @type {boolean} Service initialization status */
     this.isInitialized = false;
+    
+    /** @type {Promise|null} Initialization promise to prevent duplicate calls */
     this.initializationPromise = null;
   }
 
-  // Initialize emergency contacts on app load
+  /**
+   * Initialize emergency contacts on app load
+   * 
+   * Automatically detects user location and fetches relevant emergency contacts.
+   * Uses caching to avoid unnecessary API calls and provides fallback contacts
+   * if location detection fails.
+   * 
+   * @returns {Promise<Object>} Emergency contacts data with location info
+   * @throws {Error} When initialization completely fails
+   * 
+   * @example
+   * const contactsData = await emergencyContactsService.initializeEmergencyContacts();
+   * console.log(contactsData.emergencyContacts); // Array of contacts
+   */
   async initializeEmergencyContacts() {
+    // Prevent duplicate initialization
     if (this.isInitialized) {
       return this.cachedContacts;
     }
 
+    // Return existing promise if initialization is in progress
     if (this.initializationPromise) {
       return this.initializationPromise;
     }
@@ -25,6 +73,12 @@ class EmergencyContactsService {
     return this.initializationPromise;
   }
 
+  /**
+   * Internal method to perform the actual initialization
+   * 
+   * @private
+   * @returns {Promise<Object>} Emergency contacts data
+   */
   async _performInitialization() {
     try {
       addBreadcrumb(
@@ -33,7 +87,7 @@ class EmergencyContactsService {
         'info'
       );
 
-      // Try to get user location
+      // Attempt to get user location
       let locationData = null;
       try {
         locationData = await locationService.getLocationForAnalysis();
@@ -56,14 +110,14 @@ class EmergencyContactsService {
         );
       }
 
-      // Fetch emergency contacts from OpenAI
+      // Fetch emergency contacts from AI service
       const emergencyData = await openAIService.fetchEmergencyContacts(locationData, {
         count: 5,
         animalType: 'all',
         urgency: 'high'
       });
 
-      // Cache the results
+      // Cache the results with metadata
       this.cachedContacts = emergencyData;
       this.lastLocationFetch = {
         timestamp: Date.now(),
@@ -91,30 +145,55 @@ class EmergencyContactsService {
         stage: 'initialization'
       });
 
-      // Return basic fallback
+      // Return basic fallback on complete failure
       this.cachedContacts = this._getBasicFallback();
       this.isInitialized = true;
       return this.cachedContacts;
     }
   }
 
-  // Get current emergency contacts (cached or fresh)
+  /**
+   * Get current emergency contacts (cached or fresh)
+   * 
+   * Returns cached contacts if still valid, otherwise fetches fresh data.
+   * Automatically handles cache validation and refresh logic.
+   * 
+   * @param {boolean} forceRefresh - Force refresh even if cache is valid
+   * @returns {Promise<Object>} Emergency contacts data
+   * 
+   * @example
+   * // Get cached contacts (default behavior)
+   * const contacts = await service.getEmergencyContacts();
+   * 
+   * // Force refresh from API
+   * const freshContacts = await service.getEmergencyContacts(true);
+   */
   async getEmergencyContacts(forceRefresh = false) {
-    // If not initialized, initialize first
+    // Initialize if not already done
     if (!this.isInitialized) {
       return await this.initializeEmergencyContacts();
     }
 
-    // Check if cache is still valid and not forced refresh
+    // Return cached data if valid and no forced refresh
     if (!forceRefresh && this._isCacheValid()) {
       return this.cachedContacts;
     }
 
-    // Refresh contacts
+    // Refresh contacts with current location
     return await this.refreshEmergencyContacts();
   }
 
-  // Refresh emergency contacts with current location
+  /**
+   * Refresh emergency contacts with current location
+   * 
+   * Fetches fresh location data and updates emergency contacts if location
+   * has changed significantly (>5km) or cache has expired.
+   * 
+   * @returns {Promise<Object>} Refreshed emergency contacts data
+   * 
+   * @example
+   * const refreshedContacts = await service.refreshEmergencyContacts();
+   */
   async refreshEmergencyContacts() {
     try {
       addBreadcrumb(
@@ -129,8 +208,8 @@ class EmergencyContactsService {
       // Check if location has changed significantly
       const locationChanged = this._hasLocationChanged(currentLocation);
       
+      // Skip refresh if location unchanged and cache valid
       if (!locationChanged && this._isCacheValid()) {
-        // Location hasn't changed much and cache is still valid
         return this.cachedContacts;
       }
 
@@ -141,7 +220,7 @@ class EmergencyContactsService {
         urgency: 'high'
       });
 
-      // Update cache
+      // Update cache with new data
       this.cachedContacts = emergencyData;
       this.lastLocationFetch = {
         timestamp: Date.now(),
@@ -172,7 +251,23 @@ class EmergencyContactsService {
     }
   }
 
-  // Get emergency contacts for specific urgency/animal type
+  /**
+   * Get emergency contacts for specific animal rescue situation
+   * 
+   * Fetches contacts tailored to specific animal type and urgency level.
+   * Useful for situation-specific recommendations.
+   * 
+   * @param {string} animalType - Type of animal ('dog', 'cat', 'bird', 'wildlife', 'all')
+   * @param {string} urgency - Urgency level ('low', 'medium', 'high', 'critical')
+   * @returns {Promise<Object>} Filtered emergency contacts data
+   * 
+   * @example
+   * // Get contacts for urgent dog rescue
+   * const dogContacts = await service.getEmergencyContactsForSituation('dog', 'high');
+   * 
+   * // Get general wildlife contacts
+   * const wildlifeContacts = await service.getEmergencyContactsForSituation('wildlife', 'medium');
+   */
   async getEmergencyContactsForSituation(animalType = 'all', urgency = 'high') {
     try {
       const locationData = await locationService.getLocationForAnalysis();
@@ -197,7 +292,12 @@ class EmergencyContactsService {
     }
   }
 
-  // Check if cache is still valid
+  /**
+   * Check if cache is still valid based on expiry time
+   * 
+   * @private
+   * @returns {boolean} True if cache is valid, false if expired
+   */
   _isCacheValid() {
     if (!this.lastLocationFetch) return false;
     
@@ -205,7 +305,16 @@ class EmergencyContactsService {
     return timeSinceLastFetch < this.cacheExpiryTime;
   }
 
-  // Check if location has changed significantly
+  /**
+   * Check if location has changed significantly (>5km threshold)
+   * 
+   * Compares current location with last cached location to determine
+   * if emergency contacts need to be refreshed.
+   * 
+   * @private
+   * @param {Object} currentLocation - Current location data
+   * @returns {boolean} True if location changed significantly
+   */
   _hasLocationChanged(currentLocation) {
     if (!this.lastLocationFetch?.location || !currentLocation) {
       return true; // Assume changed if we can't compare
@@ -215,13 +324,13 @@ class EmergencyContactsService {
     const currentCoords = currentLocation.coordinates;
 
     if (!lastCoords || !currentCoords) {
-      // Compare cities if no coordinates
+      // Compare cities if no coordinates available
       const lastCity = this.lastLocationFetch.location.address?.city;
       const currentCity = currentLocation.address?.city;
       return lastCity !== currentCity;
     }
 
-    // Calculate distance between locations
+    // Calculate distance between locations using Haversine formula
     const distance = locationService.calculateDistance(
       lastCoords.lat,
       lastCoords.lng,
@@ -233,7 +342,14 @@ class EmergencyContactsService {
     return distance > 5;
   }
 
-  // Filter cached contacts based on criteria
+  /**
+   * Filter cached contacts based on animal type and urgency criteria
+   * 
+   * @private
+   * @param {string} animalType - Animal type to filter by
+   * @param {string} urgency - Urgency level to filter by
+   * @returns {Object} Filtered contacts data
+   */
   _filterCachedContacts(animalType, urgency) {
     if (!this.cachedContacts?.emergencyContacts) {
       return this._getBasicFallback();
@@ -245,7 +361,7 @@ class EmergencyContactsService {
         contact.specialization.includes(animalType) ||
         contact.specialization.includes('all animals');
 
-      // Check urgency level
+      // Check urgency level compatibility
       const urgencyLevels = {
         'low': ['standard', 'medium', 'high', 'critical'],
         'medium': ['medium', 'high', 'critical'],
@@ -264,7 +380,15 @@ class EmergencyContactsService {
     };
   }
 
-  // Get basic fallback contacts
+  /**
+   * Get basic fallback contacts when all other methods fail
+   * 
+   * Provides essential emergency contacts that work nationwide.
+   * Used as last resort when location detection and API calls fail.
+   * 
+   * @private
+   * @returns {Object} Basic fallback emergency contacts
+   */
   _getBasicFallback() {
     return {
       location: {
@@ -320,7 +444,18 @@ class EmergencyContactsService {
     };
   }
 
-  // Manual location update (when user provides location)
+  /**
+   * Manual location update with user-provided location string
+   * 
+   * Allows users to manually specify their location when GPS is unavailable
+   * or inaccurate. Extracts city information and fetches relevant contacts.
+   * 
+   * @param {string} manualLocation - User-provided location string
+   * @returns {Promise<Object>} Emergency contacts for manual location
+   * 
+   * @example
+   * const contacts = await service.updateLocationAndRefresh("Mumbai, Maharashtra");
+   */
   async updateLocationAndRefresh(manualLocation) {
     try {
       // Create location data from manual input
@@ -336,7 +471,7 @@ class EmergencyContactsService {
       // Fetch contacts for manual location
       const emergencyData = await openAIService.fetchEmergencyContacts(locationData);
       
-      // Update cache
+      // Update cache with manual location data
       this.cachedContacts = emergencyData;
       this.lastLocationFetch = {
         timestamp: Date.now(),
@@ -352,7 +487,16 @@ class EmergencyContactsService {
     }
   }
 
-  // Extract city from manual location text
+  /**
+   * Extract city name from manual location text
+   * 
+   * Uses pattern matching to identify major Indian cities from
+   * user-provided location strings.
+   * 
+   * @private
+   * @param {string} locationText - Location text to parse
+   * @returns {string|null} Extracted city name or null
+   */
   _extractCityFromText(locationText) {
     const cityMappings = {
       'mumbai': ['mumbai', 'bombay'],
@@ -376,12 +520,21 @@ class EmergencyContactsService {
     return null;
   }
 
-  // Get cached contacts without API call
+  /**
+   * Get cached contacts without making API calls
+   * 
+   * @returns {Object|null} Currently cached contacts or null
+   */
   getCachedContacts() {
     return this.cachedContacts;
   }
 
-  // Force clear cache
+  /**
+   * Force clear all cached data and reset service state
+   * 
+   * Useful for testing or when user wants to start fresh.
+   * Forces re-initialization on next service call.
+   */
   clearCache() {
     this.cachedContacts = null;
     this.lastLocationFetch = null;
@@ -390,6 +543,6 @@ class EmergencyContactsService {
   }
 }
 
-// Create singleton instance
+// Create and export singleton instance for global use
 const emergencyContactsService = new EmergencyContactsService();
 export default emergencyContactsService; 

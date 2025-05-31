@@ -1,18 +1,83 @@
+/**
+ * OpenAI Service
+ * 
+ * Provides AI-powered analysis for animal rescue situations using OpenAI's GPT models.
+ * Features intelligent message analysis, emergency contact generation, NGO recommendations,
+ * and location-aware rescue assistance.
+ * 
+ * Key Features:
+ * - Advanced animal rescue situation detection and triage
+ * - GPS-enhanced location analysis and emergency contact generation
+ * - NGO recommendation system with distance-based matching
+ * - Urgency assessment with 1-10 scoring system
+ * - Comprehensive error handling and fallback mechanisms
+ * 
+ * @author Curio Development Team
+ * @version 1.0.0
+ */
+
 import OpenAI from 'openai';
 import ngoService from './ngoService';
 import { logError, addBreadcrumb } from '../utils/sentry';
 
+/**
+ * OpenAIService Class
+ * 
+ * Main service for AI-powered animal rescue analysis and assistance.
+ * Integrates with OpenAI's GPT models to provide intelligent triage,
+ * location-based recommendations, and emergency contact generation.
+ */
 class OpenAIService {
   constructor() {
+    /** @type {OpenAI} OpenAI client instance */
     this.openai = new OpenAI({
       apiKey: process.env.REACT_APP_OPENAI_API_KEY,
       dangerouslyAllowBrowser: true
     });
+    
+    /** @type {Array} Conversation history for context awareness */
     this.conversationHistory = [];
+    
+    /** @type {string} OpenAI API key */
     this.apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+    
+    /** @type {string} OpenAI API endpoint URL */
     this.apiUrl = 'https://api.openai.com/v1/chat/completions';
   }
 
+  /**
+   * Analyze user message for animal rescue situations
+   * 
+   * Performs comprehensive AI analysis of user messages to detect rescue situations,
+   * assess urgency, provide care recommendations, and suggest local NGOs.
+   * Enhanced with GPS location data for precise emergency contact generation.
+   * 
+   * @param {Object} input - Analysis input parameters
+   * @param {string} input.message - User message to analyze (may include location context)
+   * @param {Object|null} input.locationData - GPS location data if available
+   * @param {boolean} input.hasGPS - Whether GPS location is available
+   * @param {Object|null} input.previousAnalysis - Previous analysis for context
+   * @returns {Promise<Object>} Comprehensive analysis result
+   * 
+   * @example
+   * const analysis = await openaiService.analyzeMessage({
+   *   message: "I found an injured dog near Central Park",
+   *   locationData: { coordinates: { lat: 40.7829, lng: -73.9654 }, address: {...} },
+   *   hasGPS: true,
+   *   previousAnalysis: null
+   * });
+   * 
+   * // Analysis structure:
+   * {
+   *   isRescueSituation: true,
+   *   confidence: 0.95,
+   *   animalInfo: { type: 'dog', condition: 'injured', ... },
+   *   urgencyAnalysis: { level: 'high', score: 8, ... },
+   *   locationAnalysis: { specificity: 5, hasGPS: true, ... },
+   *   careRecommendations: { immediate: [...], doNots: [...], ... },
+   *   ngoRecommendations: { found: true, ngos: [...], ... }
+   * }
+   */
   async analyzeMessage(input) {
     const { message, locationData, hasGPS, previousAnalysis } = input;
     
@@ -203,7 +268,16 @@ Remember: Always provide accurate, helpful guidance while prioritizing animal we
     }
   }
 
-  // Generate enhanced location prompt
+  /**
+   * Generate enhanced location prompt based on GPS availability
+   * 
+   * Creates contextual prompts for the AI based on whether GPS location
+   * data is available, helping the AI make better location-based decisions.
+   * 
+   * @param {Object|null} locationData - GPS location data
+   * @param {boolean} hasGPS - Whether GPS data is available
+   * @returns {string} Formatted location prompt for AI
+   */
   generateLocationPrompt(locationData, hasGPS) {
     if (!hasGPS || !locationData) {
       return "LOCATION STATUS: No GPS data available. Extract location from user message text.";
@@ -556,6 +630,19 @@ Use this precise location data for:
     };
   }
 
+  /**
+   * Generate AI response based on analysis results
+   * 
+   * Creates contextual, empathetic responses that match the urgency level
+   * and provide appropriate guidance for the rescue situation.
+   * 
+   * @param {Object} analysis - Analysis results from analyzeMessage
+   * @param {string} userMessage - Original user message for context
+   * @returns {Promise<string>} AI-generated response
+   * 
+   * @example
+   * const response = await openaiService.generateResponse(analysis, "Found injured dog");
+   */
   async generateResponse(analysis, userMessage) {
     try {
       const response = await this.openai.chat.completions.create({
@@ -638,7 +725,44 @@ Analysis Context: ${JSON.stringify(analysis)}`
     this.conversationHistory = [];
   }
 
-  // NEW: Fetch location-based emergency contacts
+  /**
+   * Fetch location-based emergency contacts using AI
+   * 
+   * Generates realistic emergency contact information tailored to the user's
+   * location, including animal control, veterinary hospitals, NGOs, and
+   * rescue services with proper Indian contact details.
+   * 
+   * @param {Object|null} locationData - GPS location data if available
+   * @param {Object} options - Generation options
+   * @param {number} options.count - Number of contacts to generate (default: 5)
+   * @param {string} options.animalType - Animal type filter (default: 'all')
+   * @param {string} options.urgency - Urgency level (default: 'high')
+   * @returns {Promise<Object>} Generated emergency contacts data
+   * 
+   * @example
+   * const contacts = await openaiService.fetchEmergencyContacts(locationData, {
+   *   count: 3,
+   *   animalType: 'dog',
+   *   urgency: 'critical'
+   * });
+   * 
+   * // Returns:
+   * {
+   *   location: { detected: "Mumbai, Maharashtra", coordinates: [...] },
+   *   emergencyContacts: [
+   *     {
+   *       name: "Mumbai Animal Hospital",
+   *       type: "veterinary",
+   *       phone: "+91-98765-43210",
+   *       availability: "24/7",
+   *       is24x7: true,
+   *       urgencyLevel: "critical",
+   *       specialization: ["emergency", "dogs", "cats"]
+   *     }
+   *   ],
+   *   generalGuidance: { immediateSteps: [...], safetyTips: [...] }
+   * }
+   */
   async fetchEmergencyContacts(locationData, options = {}) {
     const { count = 5, animalType = 'all', urgency = 'high' } = options;
     
