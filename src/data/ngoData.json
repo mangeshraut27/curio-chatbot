@@ -1,0 +1,491 @@
+{
+  "cities": {
+    "mumbai": {
+      "displayName": "Mumbai",
+      "ngoCount": 5,
+      "ngos": [
+        {
+          "id": "mumbai_1",
+          "name": "World for All Animal Care & Adoptions",
+          "phone": "+91-98200-82202",
+          "email": "info@worldforall.co",
+          "address": "Juhu, Mumbai, Maharashtra 400049",
+          "specialization": ["dogs", "cats", "medical care", "emergency"],
+          "availability": "9:00 AM - 7:00 PM",
+          "availability24x7": false,
+          "rating": 5,
+          "description": "Comprehensive animal rescue and medical care services",
+          "coordinates": {
+            "lat": 19.1075,
+            "lng": 72.8263
+          }
+        },
+        {
+          "id": "mumbai_2", 
+          "name": "Welfare of Stray Dogs (WSD)",
+          "phone": "+91-22-2645-4079",
+          "email": "wsd@bom6.vsnl.net.in",
+          "address": "Parel, Mumbai, Maharashtra 400012",
+          "specialization": ["dogs", "sterilization", "medical care"],
+          "availability": "8:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Focused on stray dog population control and welfare",
+          "coordinates": {
+            "lat": 19.0144,
+            "lng": 72.8395
+          }
+        },
+        {
+          "id": "mumbai_3",
+          "name": "Bombay SPCA",
+          "phone": "+91-22-2416-1601",
+          "email": "info@bombaypspca.org", 
+          "address": "Parel, Mumbai, Maharashtra 400012",
+          "specialization": ["all animals", "emergency", "wildlife", "shelter"],
+          "availability24x7": true,
+          "rating": 5,
+          "description": "24/7 emergency animal rescue and shelter services",
+          "coordinates": {
+            "lat": 19.0176,
+            "lng": 72.8562
+          }
+        },
+        {
+          "id": "mumbai_4",
+          "name": "RESQ Charitable Trust",
+          "phone": "+91-98230-07821",
+          "email": "info@resqct.org",
+          "address": "Bavdhan, Pune (serves Mumbai area)",
+          "specialization": ["wildlife", "emergency", "exotic animals"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "Specialized wildlife rescue and emergency response",
+          "coordinates": {
+            "lat": 18.5074,
+            "lng": 73.7898
+          }
+        },
+        {
+          "id": "mumbai_5",
+          "name": "Animal Angels Foundation",
+          "phone": "+91-98927-64556",
+          "email": "animalangelsfoundation@gmail.com",
+          "address": "Andheri, Mumbai, Maharashtra 400053",
+          "specialization": ["cats", "dogs", "medical care"],
+          "availability": "10:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Animal rescue and rehabilitation center",
+          "coordinates": {
+            "lat": 19.1136,
+            "lng": 72.8697
+          }
+        }
+      ]
+    },
+    "delhi": {
+      "displayName": "Delhi",
+      "ngoCount": 4,
+      "ngos": [
+        {
+          "id": "delhi_1",
+          "name": "Friendicoes SECA",
+          "phone": "+91-11-2431-1298",
+          "email": "info@friendicoes.org",
+          "address": "Jangpura, New Delhi 110014",
+          "specialization": ["dogs", "cats", "medical care", "shelter"],
+          "availability": "9:00 AM - 5:00 PM",
+          "availability24x7": false,
+          "rating": 5,
+          "description": "Comprehensive animal welfare organization",
+          "coordinates": {
+            "lat": 28.5755,
+            "lng": 77.2457
+          }
+        },
+        {
+          "id": "delhi_2",
+          "name": "People For Animals (PFA)",
+          "phone": "+91-11-2462-5084",
+          "email": "pfadelhi@gmail.com",
+          "address": "Vasant Vihar, New Delhi 110057",
+          "specialization": ["all animals", "emergency", "wildlife"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "24/7 animal emergency services and rescue",
+          "coordinates": {
+            "lat": 28.5706,
+            "lng": 77.1572
+          }
+        },
+        {
+          "id": "delhi_3",
+          "name": "Sanjay Gandhi Animal Care Centre",
+          "phone": "+91-11-2431-1137",
+          "email": "sgacc.delhi@gmail.com",
+          "address": "Rajghat, Delhi 110002",
+          "specialization": ["dogs", "cats", "sterilization"],
+          "availability": "8:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Government-supported animal care facility",
+          "coordinates": {
+            "lat": 28.6418,
+            "lng": 77.2506
+          }
+        },
+        {
+          "id": "delhi_4",
+          "name": "Wildlife SOS",
+          "phone": "+91-11-4653-8300",
+          "email": "info@wildlifesos.org",
+          "address": "Gautam Budh Nagar, Uttar Pradesh 201301",
+          "specialization": ["wildlife", "emergency", "exotic animals"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "Wildlife rescue and emergency response team",
+          "coordinates": {
+            "lat": 28.4595,
+            "lng": 77.0266
+          }
+        }
+      ]
+    },
+    "bangalore": {
+      "displayName": "Bangalore",
+      "ngoCount": 4,
+      "ngos": [
+        {
+          "id": "bangalore_1",
+          "name": "Compassion Unlimited Plus Action (CUPA)",
+          "phone": "+91-80-2658-6930",
+          "email": "info@cupabangalore.org",
+          "address": "Kengeri, Bangalore 560060",
+          "specialization": ["dogs", "cats", "medical care", "shelter"],
+          "availability": "9:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 5,
+          "description": "Premier animal hospital and rescue center",
+          "coordinates": {
+            "lat": 12.9080,
+            "lng": 77.4854
+          }
+        },
+        {
+          "id": "bangalore_2",
+          "name": "Bangalore SPCA",
+          "phone": "+91-80-2287-6265",
+          "email": "info@bangalorespca.org",
+          "address": "Richmond Town, Bangalore 560025",
+          "specialization": ["all animals", "emergency", "medical care"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "24/7 animal emergency and medical services",
+          "coordinates": {
+            "lat": 12.9698,
+            "lng": 77.6124
+          }
+        },
+        {
+          "id": "bangalore_3",
+          "name": "Krupa Animal Hospital",
+          "phone": "+91-99720-29495",
+          "email": "krupaanimalhospital@gmail.com",
+          "address": "Malleswaram, Bangalore 560003",
+          "specialization": ["dogs", "cats", "medical care", "emergency"],
+          "availability": "24/7",
+          "availability24x7": true,
+          "rating": 4,
+          "description": "24-hour veterinary emergency hospital",
+          "coordinates": {
+            "lat": 13.0067,
+            "lng": 77.5737
+          }
+        },
+        {
+          "id": "bangalore_4",
+          "name": "Sarvoday Animal Hospital",
+          "phone": "+91-80-2334-7820",
+          "email": "sarvodayah@gmail.com",
+          "address": "BTM Layout, Bangalore 560076",
+          "specialization": ["dogs", "cats", "birds", "medical care"],
+          "availability": "8:00 AM - 8:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Multi-specialty animal hospital",
+          "coordinates": {
+            "lat": 12.9165,
+            "lng": 77.6101
+          }
+        }
+      ]
+    },
+    "chennai": {
+      "displayName": "Chennai",
+      "ngoCount": 3,
+      "ngos": [
+        {
+          "id": "chennai_1",
+          "name": "Blue Cross of India",
+          "phone": "+91-44-2345-7809",
+          "email": "info@bluecrossofindia.org",
+          "address": "Velachery, Chennai 600042",
+          "specialization": ["all animals", "medical care", "shelter", "emergency"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "India's first animal welfare organization",
+          "coordinates": {
+            "lat": 12.9784,
+            "lng": 80.2017
+          }
+        },
+        {
+          "id": "chennai_2",
+          "name": "People For Animals Chennai",
+          "phone": "+91-98400-43211",
+          "email": "pfachennai@yahoo.com",
+          "address": "Adyar, Chennai 600020",
+          "specialization": ["dogs", "cats", "wildlife", "emergency"],
+          "availability": "9:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Animal rescue and welfare services",
+          "coordinates": {
+            "lat": 13.0067,
+            "lng": 80.2206
+          }
+        },
+        {
+          "id": "chennai_3",
+          "name": "Tree Foundation",
+          "phone": "+91-44-2491-4368",
+          "email": "info@treefoundation.org",
+          "address": "Nungambakkam, Chennai 600034",
+          "specialization": ["wildlife", "birds", "emergency"],
+          "availability": "10:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Wildlife and bird rescue specialists",
+          "coordinates": {
+            "lat": 13.0594,
+            "lng": 80.2428
+          }
+        }
+      ]
+    },
+    "hyderabad": {
+      "displayName": "Hyderabad", 
+      "ngoCount": 3,
+      "ngos": [
+        {
+          "id": "hyderabad_1",
+          "name": "Animal Warriors Conservation Society",
+          "phone": "+91-90000-25333",
+          "email": "info@awcsindia.org",
+          "address": "Madhapur, Hyderabad 500081",
+          "specialization": ["wildlife", "emergency", "exotic animals"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "Wildlife emergency rescue and conservation",
+          "coordinates": {
+            "lat": 17.4485,
+            "lng": 78.3908
+          }
+        },
+        {
+          "id": "hyderabad_2",
+          "name": "GHMC Animal Birth Control",
+          "phone": "+91-40-2555-0355",
+          "email": "ghmc.abc@gmail.com",
+          "address": "Banjara Hills, Hyderabad 500034",
+          "specialization": ["dogs", "cats", "sterilization"],
+          "availability": "9:00 AM - 5:00 PM",
+          "availability24x7": false,
+          "rating": 3,
+          "description": "Government animal birth control program",
+          "coordinates": {
+            "lat": 17.4126,
+            "lng": 78.4071
+          }
+        },
+        {
+          "id": "hyderabad_3",
+          "name": "Hyderabad Animal Rescue Trust",
+          "phone": "+91-99598-14123",
+          "email": "hart.hyderabad@gmail.com",
+          "address": "Jubilee Hills, Hyderabad 500033",
+          "specialization": ["dogs", "cats", "medical care"],
+          "availability": "10:00 AM - 7:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Animal rescue and medical care services",
+          "coordinates": {
+            "lat": 17.4274,
+            "lng": 78.4138
+          }
+        }
+      ]
+    },
+    "pune": {
+      "displayName": "Pune",
+      "ngoCount": 3,
+      "ngos": [
+        {
+          "id": "pune_1",
+          "name": "RESQ Charitable Trust",
+          "phone": "+91-98230-07821",
+          "email": "info@resqct.org",
+          "address": "Bavdhan, Pune 411021",
+          "specialization": ["wildlife", "emergency", "exotic animals", "all animals"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "Premier wildlife rescue and emergency response",
+          "coordinates": {
+            "lat": 18.5074,
+            "lng": 73.7898
+          }
+        },
+        {
+          "id": "pune_2",
+          "name": "Pune SPCA",
+          "phone": "+91-20-2565-2556",
+          "email": "info@punespca.org",
+          "address": "Sadashiv Peth, Pune 411030",
+          "specialization": ["dogs", "cats", "medical care", "shelter"],
+          "availability": "9:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Animal welfare and shelter services",
+          "coordinates": {
+            "lat": 18.5158,
+            "lng": 73.8567
+          }
+        },
+        {
+          "id": "pune_3",
+          "name": "Mission Possible Foundation",
+          "phone": "+91-98900-26500",
+          "email": "missionpossible.pune@gmail.com",
+          "address": "Kothrud, Pune 411038",
+          "specialization": ["dogs", "cats", "emergency"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 4,
+          "description": "Emergency animal rescue services",
+          "coordinates": {
+            "lat": 18.5074,
+            "lng": 73.8077
+          }
+        }
+      ]
+    },
+    "kolkata": {
+      "displayName": "Kolkata",
+      "ngoCount": 3,
+      "ngos": [
+        {
+          "id": "kolkata_1",
+          "name": "Calcutta SPCA",
+          "phone": "+91-33-2229-0239",
+          "email": "info@calcuttaspca.org",
+          "address": "Park Street, Kolkata 700016",
+          "specialization": ["all animals", "medical care", "shelter"],
+          "availability": "9:00 AM - 5:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Oldest animal welfare organization in India",
+          "coordinates": {
+            "lat": 22.5448,
+            "lng": 88.3426
+          }
+        },
+        {
+          "id": "kolkata_2",
+          "name": "Darjeeling Animal Shelter",
+          "phone": "+91-98300-85274",
+          "email": "dashkolkata@gmail.com",
+          "address": "Salt Lake, Kolkata 700064",
+          "specialization": ["dogs", "cats", "shelter"],
+          "availability": "10:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 4,
+          "description": "Animal shelter and adoption center",
+          "coordinates": {
+            "lat": 22.5958,
+            "lng": 88.4497
+          }
+        },
+        {
+          "id": "kolkata_3",
+          "name": "All Creatures Great and Small",
+          "phone": "+91-98361-94949",
+          "email": "acgskolkata@gmail.com",
+          "address": "Howrah, Kolkata 711101",
+          "specialization": ["dogs", "cats", "medical care", "emergency"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 4,
+          "description": "Emergency animal medical services",
+          "coordinates": {
+            "lat": 22.5958,
+            "lng": 88.2636
+          }
+        }
+      ]
+    },
+    "jaipur": {
+      "displayName": "Jaipur",
+      "ngoCount": 2,
+      "ngos": [
+        {
+          "id": "jaipur_1",
+          "name": "Help in Suffering (HIS)",
+          "phone": "+91-141-270-6571",
+          "email": "his@datainfosys.net",
+          "address": "Maharani Farm, Jaipur 302018",
+          "specialization": ["dogs", "cats", "sterilization", "medical care"],
+          "availability": "8:00 AM - 6:00 PM",
+          "availability24x7": false,
+          "rating": 5,
+          "description": "Pioneer in animal sterilization and care",
+          "coordinates": {
+            "lat": 26.8851,
+            "lng": 75.7797
+          }
+        },
+        {
+          "id": "jaipur_2",
+          "name": "Animal Aid Unlimited",
+          "phone": "+91-94145-25314",
+          "email": "info@animalaidunlimited.org",
+          "address": "Badi Village, Udaipur (serves Jaipur)",
+          "specialization": ["all animals", "emergency", "medical care"],
+          "availability": "24/7 Emergency",
+          "availability24x7": true,
+          "rating": 5,
+          "description": "Emergency rescue and medical treatment",
+          "coordinates": {
+            "lat": 24.5854,
+            "lng": 73.7125
+          }
+        }
+      ]
+    }
+  },
+  "fallback": {
+    "name": "National Animal Welfare Helpline",
+    "phone": "1962",
+    "email": "help@animalwelfare.gov.in",
+    "description": "National emergency helpline for animal welfare across India",
+    "availability": "24/7",
+    "specialization": ["emergency", "all animals"]
+  }
+} 

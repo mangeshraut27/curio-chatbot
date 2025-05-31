@@ -1,0 +1,101 @@
+{
+  "cases": [
+    {
+      "id": "case_001",
+      "timestamp": "2024-01-15T14:30:00Z",
+      "location": "Bandra West, Mumbai",
+      "animalType": "Dog",
+      "urgencyLevel": "high",
+      "description": "Injured stray dog hit by vehicle, bleeding from leg",
+      "status": "rescued",
+      "rescuedBy": "Mumbai Animal Welfare Society",
+      "triageScore": 8,
+      "reportedBy": "Anonymous User",
+      "coordinates": {
+        "lat": 19.0596,
+        "lng": 72.8295
+      },
+      "imageUrl": null,
+      "tags": ["injury", "traffic_accident", "urgent"]
+    },
+    {
+      "id": "case_002", 
+      "timestamp": "2024-01-15T11:45:00Z",
+      "location": "Connaught Place, Delhi",
+      "animalType": "Cat",
+      "urgencyLevel": "medium",
+      "description": "Pregnant cat seeking shelter, appears healthy but needs safe space",
+      "status": "in_progress",
+      "rescuedBy": null,
+      "triageScore": 5,
+      "reportedBy": "Local Resident",
+      "coordinates": {
+        "lat": 28.6315,
+        "lng": 77.2167
+      },
+      "imageUrl": null,
+      "tags": ["pregnant", "shelter_needed", "healthy"]
+    },
+    {
+      "id": "case_003",
+      "timestamp": "2024-01-14T16:20:00Z", 
+      "location": "Koramangala, Bangalore",
+      "animalType": "Puppy",
+      "urgencyLevel": "high",
+      "description": "Abandoned puppies (3) found in cardboard box, very young, need immediate care",
+      "status": "rescued",
+      "rescuedBy": "Bangalore Animal Rescue Foundation",
+      "triageScore": 9,
+      "reportedBy": "Good Samaritan",
+      "coordinates": {
+        "lat": 12.9352,
+        "lng": 77.6245
+      },
+      "imageUrl": null,
+      "tags": ["abandoned", "multiple_animals", "newborn", "emergency"]
+    },
+    {
+      "id": "case_004",
+      "timestamp": "2024-01-14T09:15:00Z",
+      "location": "Anna Nagar, Chennai", 
+      "animalType": "Dog",
+      "urgencyLevel": "low",
+      "description": "Friendly stray dog in neighborhood, well-fed but no collar, seeking adoption",
+      "status": "pending",
+      "rescuedBy": null,
+      "triageScore": 3,
+      "reportedBy": "Neighborhood Watch",
+      "coordinates": {
+        "lat": 13.0843,
+        "lng": 80.2705
+      },
+      "imageUrl": null,
+      "tags": ["adoption_ready", "friendly", "healthy", "community"]
+    },
+    {
+      "id": "case_005",
+      "timestamp": "2024-01-13T18:45:00Z",
+      "location": "Sector 14, Gurgaon",
+      "animalType": "Bird",
+      "urgencyLevel": "medium", 
+      "description": "Injured crow with damaged wing, unable to fly, needs wildlife care",
+      "status": "in_progress",
+      "rescuedBy": null,
+      "triageScore": 6,
+      "reportedBy": "Park Visitor",
+      "coordinates": {
+        "lat": 28.4595,
+        "lng": 77.0266
+      },
+      "imageUrl": null,
+      "tags": ["wildlife", "wing_injury", "bird_rescue"]
+    }
+  ],
+  "stats": {
+    "totalCases": 5,
+    "rescued": 2,
+    "inProgress": 2,
+    "pending": 1,
+    "lastUpdated": "2024-01-15T15:00:00Z"
+  }
+} 

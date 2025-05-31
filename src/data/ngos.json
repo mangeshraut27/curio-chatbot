@@ -1,0 +1,148 @@
+{
+  "ngos": {
+    "mumbai": [
+      {
+        "id": "mumbai_1",
+        "name": "Mumbai Animal Welfare Society",
+        "phone": "+91-98765-43210",
+        "email": "help@maws.org",
+        "address": "Andheri West, Mumbai",
+        "specializations": ["dogs", "cats", "emergency"],
+        "availability": "24/7",
+        "rating": 4.8,
+        "description": "Leading animal rescue organization in Mumbai with emergency response team"
+      },
+      {
+        "id": "mumbai_2", 
+        "name": "Bombay SPCA",
+        "phone": "+91-98123-45678",
+        "email": "rescue@bombaySPCA.org",
+        "address": "Parel, Mumbai",
+        "specializations": ["all animals", "medical care", "shelter"],
+        "availability": "9 AM - 6 PM",
+        "rating": 4.6,
+        "description": "Comprehensive animal care with veterinary hospital and shelter facilities"
+      }
+    ],
+    "delhi": [
+      {
+        "id": "delhi_1",
+        "name": "Friendicoes SECA",
+        "phone": "+91-99876-54321",
+        "email": "info@friendicoes.org", 
+        "address": "Jangpura, New Delhi",
+        "specializations": ["dogs", "cats", "wildlife", "emergency"],
+        "availability": "24/7",
+        "rating": 4.9,
+        "description": "Premier animal welfare organization with 24/7 emergency services"
+      },
+      {
+        "id": "delhi_2",
+        "name": "People For Animals Delhi",
+        "phone": "+91-98765-12345",
+        "email": "delhi@peopleforanimalsindia.org",
+        "address": "Lodhi Road, New Delhi", 
+        "specializations": ["all animals", "wildlife", "legal support"],
+        "availability": "9 AM - 7 PM",
+        "rating": 4.7,
+        "description": "Comprehensive animal welfare with legal advocacy and rescue services"
+      }
+    ],
+    "bangalore": [
+      {
+        "id": "bangalore_1",
+        "name": "CUPA - Compassion Unlimited Plus Action",
+        "phone": "+91-97654-32109",
+        "email": "cupa@cupabangalore.org",
+        "address": "Sarjapur Road, Bangalore",
+        "specializations": ["dogs", "cats", "medical care", "adoption"],
+        "availability": "8 AM - 8 PM",
+        "rating": 4.8,
+        "description": "Leading animal hospital and rescue center in Bangalore"
+      },
+      {
+        "id": "bangalore_2",
+        "name": "Karnataka SPCA",
+        "phone": "+91-98123-67890",
+        "email": "help@karnatakasSPCA.org",
+        "address": "Malleswaram, Bangalore",
+        "specializations": ["all animals", "emergency", "shelter"],
+        "availability": "24/7",
+        "rating": 4.5,
+        "description": "24/7 emergency rescue services with modern shelter facilities"
+      }
+    ],
+    "hyderabad": [
+      {
+        "id": "hyderabad_1",
+        "name": "Animal Warriors Conservation Society",
+        "phone": "+91-99123-45678",
+        "email": "contact@animalwarriors.org",
+        "address": "Banjara Hills, Hyderabad",
+        "specializations": ["dogs", "cats", "wildlife", "emergency"],
+        "availability": "24/7",
+        "rating": 4.7,
+        "description": "Dedicated wildlife and pet rescue with emergency response team"
+      }
+    ],
+    "chennai": [
+      {
+        "id": "chennai_1",
+        "name": "Blue Cross of India",
+        "phone": "+91-98765-09876",
+        "email": "info@bluecrossofindia.org",
+        "address": "Velachery, Chennai",
+        "specializations": ["all animals", "medical care", "shelter", "adoption"],
+        "availability": "8 AM - 6 PM", 
+        "rating": 4.6,
+        "description": "India's first animal welfare organization with comprehensive care"
+      }
+    ],
+    "pune": [
+      {
+        "id": "pune_1",
+        "name": "Mission Possible Foundation",
+        "phone": "+91-97123-45678",
+        "email": "rescue@missionpossible.org",
+        "address": "Koregaon Park, Pune",
+        "specializations": ["dogs", "cats", "emergency", "medical care"],
+        "availability": "24/7",
+        "rating": 4.8,
+        "description": "Emergency animal rescue with advanced medical facilities"
+      }
+    ],
+    "kolkata": [
+      {
+        "id": "kolkata_1", 
+        "name": "Calcutta Rescue",
+        "phone": "+91-98321-54321",
+        "email": "animals@calcuttarescue.org",
+        "address": "Park Street, Kolkata", 
+        "specializations": ["all animals", "street animals", "medical care"],
+        "availability": "9 AM - 6 PM",
+        "rating": 4.5,
+        "description": "Street animal care and rescue with community outreach programs"
+      }
+    ],
+    "jaipur": [
+      {
+        "id": "jaipur_1",
+        "name": "Animal Aid Unlimited",
+        "phone": "+91-94123-45678", 
+        "email": "info@animalaidunlimited.org",
+        "address": "Badi Village, Udaipur",
+        "specializations": ["all animals", "emergency", "medical care", "rehabilitation"],
+        "availability": "24/7",
+        "rating": 4.9,
+        "description": "Internationally recognized animal rescue with advanced medical care"
+      }
+    ]
+  },
+  "defaultNGO": {
+    "name": "National Animal Welfare Helpline",
+    "phone": "1962",
+    "email": "help@animalwelfare.gov.in",
+    "description": "Government helpline for animal emergencies across India",
+    "availability": "24/7"
+  }
+} 

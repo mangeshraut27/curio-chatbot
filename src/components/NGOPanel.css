@@ -1,0 +1,760 @@
+.ngo-panel {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin: 1rem 0;
+  border-left: 3px solid #3b82f6;
+}
+
+.ngo-panel.fallback {
+  border-left-color: #f59e0b;
+}
+
+.ngo-section {
+  padding: 1rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.section-header h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-icon {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.location-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.location-icon {
+  font-size: 0.875rem;
+}
+
+/* Recommendations Summary */
+.recommendations-summary {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.match-message {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+.contextual-recommendations {
+  background: white;
+  border-radius: 6px;
+  padding: 0.75rem;
+  border: 1px solid #e0f2fe;
+}
+
+.recommendations-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rec-icon {
+  font-size: 0.875rem;
+}
+
+.rec-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0c4a6e;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+}
+
+.recommendations-list {
+  margin: 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+
+.recommendation-item {
+  font-size: 0.75rem;
+  color: #374151;
+  line-height: 1.4;
+  margin-bottom: 0.375rem;
+  position: relative;
+}
+
+.recommendation-item::before {
+  content: '•';
+  color: #3b82f6;
+  font-weight: bold;
+  position: absolute;
+  left: -0.75rem;
+}
+
+.recommendation-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Fallback Message */
+.fallback-message {
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+  border: 1px solid #fef3c7;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.fallback-message p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+/* NGO Cards */
+.ngos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ngo-card {
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.ngo-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.ngo-card.primary {
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+}
+
+.ngo-card.fallback-card {
+  border-left: 4px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.ngo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.ngo-info {
+  flex: 1;
+}
+
+.ngo-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.375rem 0;
+  line-height: 1.2;
+}
+
+.ngo-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ngo-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.rating-value {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.ngo-availability {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.availability-icon {
+  font-size: 0.875rem;
+}
+
+.priority-badge {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Specializations */
+.ngo-specializations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 0.75rem;
+}
+
+.spec-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 12px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+  border: 1px solid #e5e7eb;
+}
+
+.spec-tag.emergency {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.spec-tag.dogs, .spec-tag.cats {
+  background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.spec-tag.all-animals {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.spec-tag.medical-care {
+  background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+  color: #d97706;
+  border-color: #fed7aa;
+}
+
+/* Contact Information */
+.ngo-contact {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.contact-method:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.contact-method.primary {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: -0.25rem -0.25rem 0.5rem -0.25rem;
+  border: 1px solid #bfdbfe;
+}
+
+.contact-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.contact-value {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.contact-btn {
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.25px;
+}
+
+.contact-btn.call {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.2);
+}
+
+.contact-btn.call:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.3);
+}
+
+.contact-btn.email {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
+}
+
+.contact-btn.email:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Description */
+.ngo-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+  font-style: italic;
+  background: #fafbfc;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border-left: 3px solid #e5e7eb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ngo-panel {
+    margin: 0.5rem;
+    border-radius: 6px;
+  }
+  
+  .ngo-section {
+    padding: 0.75rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .ngo-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .ngo-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+  }
+  
+  .contact-method {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .contact-btn {
+    align-self: flex-start;
+  }
+  
+  .ngo-specializations {
+    gap: 0.25rem;
+  }
+  
+  .spec-tag {
+    font-size: 0.5rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+/* GPS Location Enhancements */
+.location-info {
+  margin-top: 0.5rem;
+}
+
+.location-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.distance-badge {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.distance-note {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Enhanced NGO Card with Distance */
+.ngo-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.ngo-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+}
+
+.ngo-card.emergency-available {
+  border-left: 4px solid #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
+.ngo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ngo-header h4 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.125rem;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+
+.availability-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.availability-badge.emergency {
+  background: #dc2626;
+  color: white;
+  animation: emergencyPulse 2s ease-in-out infinite;
+}
+
+@keyframes emergencyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* NGO Details Section */
+.ngo-details {
+  margin-bottom: 1rem;
+}
+
+.specializations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.spec-tag {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.contact-info {
+  margin-bottom: 0.75rem;
+}
+
+.contact-info p {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.ngo-phone, .ngo-email {
+  font-weight: 500;
+}
+
+.ngo-address {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.availability {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.availability-label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.availability-hours {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stars {
+  font-size: 0.875rem;
+}
+
+.rating-text {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+/* Contact Actions */
+.ngo-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.contact-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.contact-btn.call {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+}
+
+.contact-btn.call:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.contact-btn.email {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.contact-btn.email:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* GPS Footer Information */
+.gps-footer {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.gps-note {
+  font-size: 0.875rem;
+  color: #0369a1;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.location-details {
+  font-size: 0.8rem;
+  color: #0284c7;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Emergency Footer */
+.emergency-footer {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+.emergency-note {
+  font-size: 0.875rem;
+  color: #dc2626;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+}
+
+/* Context and Reasoning */
+.ngo-context {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.city-info {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.recommendation-reason {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.urgency-notice {
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+  color: #c53030;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  border: 1px solid #fc8181;
+}
+
+/* Fallback Emergency Contact */
+.no-ngos {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.fallback-contact {
+  margin-top: 1.5rem;
+}
+
+.fallback-contact h4 {
+  color: #dc2626;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.ngo-card.emergency {
+  border: 2px solid #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ngo-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .distance-badge {
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+  
+  .ngo-actions {
+    width: 100%;
+  }
+  
+  .contact-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .gps-footer {
+    padding: 0.75rem;
+  }
+  
+  .location-details {
+    word-break: break-word;
+  }
+} 
