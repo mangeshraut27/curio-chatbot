@@ -60,17 +60,15 @@ class NGOService {
     }
 
     const cityNGOs = this.ngos[city];
-    let matchedNGOs = [];
+    let matchedNGOs = [...cityNGOs]; // Create a copy of all NGOs
 
     // Filter NGOs based on animal type and specialization
     if (animalType && animalType !== 'unknown') {
-      matchedNGOs = cityNGOs.filter(ngo => 
+      matchedNGOs = matchedNGOs.filter(ngo => 
         ngo.specializations.includes('all animals') || 
         ngo.specializations.includes(animalType.toLowerCase()) ||
         (urgencyLevel === 'high' && ngo.specializations.includes('emergency'))
       );
-    } else {
-      matchedNGOs = cityNGOs;
     }
 
     // Sort by rating and availability for urgent cases
@@ -108,7 +106,8 @@ class NGOService {
         ngo.specializations.includes('emergency')
       );
       
-      return emergencyNGOs.length > 0 ? emergencyNGOs.slice(0, 2) : ngoMatch.ngos.slice(0, 2);
+      // Return all emergency NGOs (up to 2) or fall back to regular NGOs
+      return emergencyNGOs.length > 0 ? emergencyNGOs : ngoMatch.ngos.slice(0, 2);
     }
 
     return ngoMatch.ngos.slice(0, 3);

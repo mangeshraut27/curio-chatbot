@@ -27,7 +27,14 @@ const ChatBot = ({ onAnalysisUpdate, onTriageUpdate }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current && typeof messagesEndRef.current.scrollIntoView === 'function') {
+      try {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        // Fallback for test environment or if smooth scrolling is not supported
+        messagesEndRef.current.scrollIntoView();
+      }
+    }
   };
 
   useEffect(() => {
@@ -466,6 +473,7 @@ Original user message: "${inputText}"`;
                   onClick={handleSendMessage}
                   className="send-button"
                   disabled={isLoading || !inputText.trim()}
+                  aria-label="Send message"
                 >
                   {isLoading ? (
                     <div className="loading-spinner"></div>

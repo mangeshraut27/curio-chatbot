@@ -9,7 +9,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test:playwright": "npx playwright test"
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:debug": "playwright test --debug",
+    "test:playwright:report": "playwright show-report",
+    "test:playwright:install": "playwright install"
   },
   "dependencies": {
     "axios": "^1.6.0",
