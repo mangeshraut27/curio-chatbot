@@ -48,6 +48,26 @@
   font-size: 1.75rem;
 }
 
+.app-logo {
+  width: 32px;
+  height: 32px;
+  margin-right: 0.25rem;
+}
+
+.app-logo path,
+.app-logo circle,
+.app-logo ellipse,
+.app-logo rect {
+  stroke: rgba(255, 255, 255, 0.9);
+}
+
+.app-logo path[fill="#ffffff"],
+.app-logo circle[fill="#ffffff"],
+.app-logo ellipse[fill="#ffffff"],
+.app-logo rect[fill="#ffffff"] {
+  fill: rgba(255, 255, 255, 0.95);
+}
+
 .app-subtitle {
   font-size: 0.875rem;
   opacity: 0.9;
