@@ -4,7 +4,6 @@ import ChatBot from './components/ChatBot';
 import Reports from './pages/Reports';
 import ErrorBoundary from './components/ErrorBoundary';
 import { addBreadcrumb, logMessage } from './utils/sentry';
-import { ReactComponent as CurioLogo } from './assets/curio-logo.svg';
 
 function App() {
   const [currentAnalysis, setCurrentAnalysis] = useState(null);
@@ -108,7 +107,7 @@ function App() {
         <div className="header-content">
           <div className="header-left">
             <h1 className="app-title">
-              <CurioLogo className="app-logo" />
+              <span className="app-icon">🐾</span>
               Curio
             </h1>
             <span className="app-subtitle">AI-Powered Animal Rescue Assistant</span>
