@@ -28,12 +28,26 @@ CORE CAPABILITIES:
 5. Recommend local NGOs with specialization matching
 6. Analyze location specificity and safety considerations
 
+LOCATION PROCESSING:
+- User messages may contain GPS location context at the beginning
+- Look for [LOCATION CONTEXT] sections with precise GPS coordinates
+- When GPS data is available, use it for accurate city identification and distance calculations
+- If no GPS context is provided, extract location from the user's original message text
+- Prioritize GPS location data over text-based location extraction
+
 ${locationPrompt}
+
+MESSAGE STRUCTURE:
+- Messages may start with [LOCATION CONTEXT - GPS DATA AVAILABLE] or [LOCATION CONTEXT - CACHED GPS DATA]
+- The actual user message follows after "Original user message:"
+- Use GPS coordinates for precise location analysis when available
+- Extract the core rescue situation from the original user message
 
 ANALYSIS REQUIREMENTS:
 - Always respond with a JSON object containing ALL fields listed below
 - For rescue situations, provide comprehensive triage and recommendations
 - For non-rescue situations, be helpful but mark isRescueSituation as false
+- Use GPS coordinates for enhanced location specificity scoring (5/5 when GPS available)
 
 REQUIRED JSON STRUCTURE:
 {
@@ -59,14 +73,14 @@ REQUIRED JSON STRUCTURE:
     "timeframe": "immediate|within 2 hours|within 24 hours|within week"
   },
   "locationAnalysis": {
-    "specificity": number (1-5),
+    "specificity": number (1-5, always 5 when GPS coordinates available),
     "hasGPS": boolean,
-    "gpsAccuracy": number (meters, if available),
-    "extractedLocation": "location string",
-    "cityIdentified": "city name or null",
-    "needsMoreDetail": boolean,
+    "gpsAccuracy": number (meters, from GPS context if available),
+    "extractedLocation": "location string from GPS context or user message",
+    "cityIdentified": "city name from GPS or text extraction",
+    "needsMoreDetail": boolean (false when GPS available),
     "safetyConsiderations": ["accessibility", "traffic", "safety"],
-    "suggestedQuestions": ["specific location questions"]
+    "suggestedQuestions": ["specific location questions, empty when GPS available"]
   },
   "careRecommendations": {
     "immediate": ["list of immediate actions"],
@@ -76,9 +90,9 @@ REQUIRED JSON STRUCTURE:
   },
   "ngoRecommendations": {
     "found": boolean,
-    "city": "city name",
+    "city": "city name from GPS or extraction",
     "urgencyBased": boolean,
-    "ngos": ["array of matched NGOs"],
+    "ngos": ["array will be populated by service"],
     "reasoning": "why these NGOs were selected",
     "fallbackContacts": ["if no local NGOs found"]
   },
@@ -89,20 +103,23 @@ REQUIRED JSON STRUCTURE:
   },
   "reportData": {
     "summary": "brief case summary",
-    "keyDetails": "important details for rescue teams",
+    "keyDetails": "important details for rescue teams, include GPS coordinates when available",
     "priority": "low|medium|high|critical"
   }
 }
 
-LOCATION INTELLIGENCE:
+LOCATION INTELLIGENCE ENHANCED:
 ${hasGPS ? `
-- GPS LOCATION AVAILABLE: Use precise coordinates for distance-based NGO matching
-- Provide accurate location assessment and NGO proximity analysis
-- Consider GPS accuracy for location confidence scoring
+- GPS LOCATION AVAILABLE: Extract coordinates and address from [LOCATION CONTEXT] section
+- Use precise coordinates for distance-based NGO matching
+- Set locationAnalysis.specificity to 5 and hasGPS to true
+- Include GPS accuracy from the context in gpsAccuracy field
+- Set needsMoreDetail to false since GPS provides precise location
 ` : `
-- NO GPS: Rely on user-provided location text
-- Ask for more specific location details if vague
+- NO GPS: Extract location from user message text after "Original user message:"
+- Ask for more specific location details if the extracted location is vague
 - Use city extraction for NGO matching
+- Set hasGPS to false and provide location improvement suggestions
 `}
 
 URGENCY SCORING GUIDE:
@@ -111,7 +128,13 @@ URGENCY SCORING GUIDE:
 - 7-8: High (serious injuries, immediate danger)
 - 9-10: Critical (life-threatening, unconscious)
 
-Remember: Always provide accurate, helpful guidance while prioritizing animal welfare and human safety.`;
+GPS INTEGRATION BENEFITS:
+- Precise location for rescue teams (include coordinates in reportData.keyDetails)
+- Accurate NGO distance calculations
+- Enhanced emergency response coordination
+- Reduced location ambiguity and faster response times
+
+Remember: Always provide accurate, helpful guidance while prioritizing animal welfare and human safety. When GPS coordinates are available, emphasize the precision advantage for rescue coordination.`;
 
     try {
       const completion = await this.makeAPICall([

@@ -34,13 +34,27 @@ const ChatBot = ({ onAnalysisUpdate, onTriageUpdate }) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Request location on first meaningful message
+  // Request location on first message (regardless of length)
   const requestLocationIfNeeded = async () => {
-    if (locationPermissionAsked || !inputText.trim() || inputText.length < 10) {
+    console.log('requestLocationIfNeeded called', {
+      locationPermissionAsked,
+      hasUserLocation: !!userLocation
+    });
+    
+    // If we already have location data, return it
+    if (userLocation) {
+      console.log('Returning cached location');
+      return userLocation;
+    }
+    
+    // Only request location if we haven't asked before
+    if (locationPermissionAsked) {
+      console.log('Location permission already asked, returning null');
       return null;
     }
 
     try {
+      console.log('Requesting location permission...');
       setLocationPermissionAsked(true);
       
       // Show location request message
@@ -167,13 +181,43 @@ const ChatBot = ({ onAnalysisUpdate, onTriageUpdate }) => {
     setIsTyping(true);
 
     try {
-      // Request location for first meaningful message
+      // Request location for first message (will return cached location if available)
       const detectedLocation = await requestLocationIfNeeded();
       const locationToUse = detectedLocation || userLocation;
 
+      console.log('Location debug:', {
+        detectedLocation: !!detectedLocation,
+        userLocation: !!userLocation,
+        locationToUse: !!locationToUse,
+        hasLocationData: !!locationToUse?.coordinates
+      });
+
+      // Enhanced message with location details for OpenAI
+      let enhancedMessage = inputText;
+      
+      if (locationToUse) {
+        const sourceType = detectedLocation ? "GPS DATA AVAILABLE" : "CACHED GPS DATA";
+        const locationContext = `
+
+[LOCATION CONTEXT - ${sourceType}]
+- User's current location: ${locationToUse.address.formatted}
+- GPS coordinates: ${locationToUse.coordinates.lat}, ${locationToUse.coordinates.lng}
+- Location accuracy: ${locationToUse.accuracy}m
+- City: ${locationToUse.address.city}
+- State: ${locationToUse.address.state || 'N/A'}
+- Source: GPS geolocation
+
+Original user message: "${inputText}"`;
+        
+        enhancedMessage = locationContext;
+        console.log('Enhanced message with location:', enhancedMessage.substring(0, 200) + '...');
+      } else {
+        console.log('No location data available, sending original message only');
+      }
+
       // Enhanced analysis with location data
       const analysisInput = {
-        message: inputText,
+        message: enhancedMessage, // Send enhanced message with location details
         locationData: locationToUse,
         hasGPS: !!locationToUse,
         previousAnalysis: currentAnalysis
@@ -193,6 +237,7 @@ const ChatBot = ({ onAnalysisUpdate, onTriageUpdate }) => {
         analysis.ngoRecommendations.userLocation = locationToUse;
       }
 
+      // Generate response using original user message for context
       const response = await openaiService.generateResponse(analysis, inputText);
 
       setIsTyping(false);
