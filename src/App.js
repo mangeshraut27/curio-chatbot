@@ -1,13 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import ChatBot from './components/ChatBot';
 import Reports from './pages/Reports';
 import ErrorBoundary from './components/ErrorBoundary';
 import { addBreadcrumb, logMessage } from './utils/sentry';
+import emergencyContactsService from './services/emergencyContactsService';
 
 function App() {
   const [currentAnalysis, setCurrentAnalysis] = useState(null);
   const [currentView, setCurrentView] = useState('chat'); // New state for navigation
+  const [emergencyContacts, setEmergencyContacts] = useState(null);
+  const [locationStatus, setLocationStatus] = useState('checking'); // checking, granted, denied, error
+
+  useEffect(() => {
+    // Initialize emergency contacts on app load
+    initializeEmergencyContacts();
+  }, []);
+
+  const initializeEmergencyContacts = async () => {
+    try {
+      addBreadcrumb(
+        'App: Starting emergency contacts initialization',
+        'app',
+        'info'
+      );
+
+      setLocationStatus('checking');
+      
+      // Initialize emergency contacts (includes location check)
+      const contactsData = await emergencyContactsService.initializeEmergencyContacts();
+      
+      setEmergencyContacts(contactsData);
+      
+      // Determine location status based on the result
+      if (contactsData?.location?.accuracy === 'GPS') {
+        setLocationStatus('granted');
+        addBreadcrumb(
+          'App: Emergency contacts initialized with GPS',
+          'app',
+          'info',
+          { location: contactsData.location.detected }
+        );
+      } else {
+        setLocationStatus('estimated');
+        addBreadcrumb(
+          'App: Emergency contacts initialized without GPS',
+          'app',
+          'info'
+        );
+      }
+
+    } catch (error) {
+      console.error('Failed to initialize emergency contacts:', error);
+      setLocationStatus('error');
+      
+      // Set basic fallback
+      setEmergencyContacts({
+        emergencyContacts: [
+          {
+            name: 'National Animal Welfare Helpline',
+            type: 'government',
+            phone: '1962',
+            description: 'Government emergency helpline for animal emergencies'
+          }
+        ]
+      });
+    }
+  };
+
+  // Handle emergency contacts refresh
+  const refreshEmergencyContacts = async () => {
+    try {
+      setLocationStatus('checking');
+      const refreshedContacts = await emergencyContactsService.refreshEmergencyContacts();
+      setEmergencyContacts(refreshedContacts);
+      
+      if (refreshedContacts?.location?.accuracy === 'GPS') {
+        setLocationStatus('granted');
+      } else {
+        setLocationStatus('estimated');
+      }
+      
+    } catch (error) {
+      console.error('Failed to refresh emergency contacts:', error);
+      setLocationStatus('error');
+    }
+  };
 
   const handleAnalysisUpdate = (analysis) => {
     setCurrentAnalysis(analysis);
@@ -51,6 +129,47 @@ function App() {
               Curio is an AI-powered animal rescue assistant designed to help identify, triage, and coordinate rescue efforts for stray and injured animals across India. 
               Our intelligent chatbot provides immediate guidance, connects you with local NGOs, and helps create detailed rescue reports.
             </p>
+            
+            {/* Location Status Display */}
+            <div style={{ 
+              marginTop: '20px', 
+              padding: '15px', 
+              background: '#f3f4f6', 
+              borderRadius: '8px',
+              maxWidth: '600px',
+              margin: '20px auto'
+            }}>
+              <h4>📍 Location Status</h4>
+              <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                Status: <strong>
+                  {locationStatus === 'checking' && '🔄 Checking location...'}
+                  {locationStatus === 'granted' && '✅ GPS location enabled'}
+                  {locationStatus === 'estimated' && '📍 Using estimated location'}
+                  {locationStatus === 'error' && '❌ Location unavailable'}
+                </strong>
+              </p>
+              {emergencyContacts?.location && (
+                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                  Location: {emergencyContacts.location.detected}
+                </p>
+              )}
+              <button
+                onClick={refreshEmergencyContacts}
+                style={{
+                  marginTop: '10px',
+                  padding: '8px 16px',
+                  background: '#3b82f6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                🔄 Refresh Location & Contacts
+              </button>
+            </div>
+
             {process.env.NODE_ENV === 'development' && (
               <button 
                 onClick={testSentry}
@@ -86,6 +205,10 @@ function App() {
                 <h4>Can I generate rescue reports?</h4>
                 <p>Absolutely! You can generate detailed rescue reports and use our AI to create additional realistic training data for rescue scenarios.</p>
               </div>
+              <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                <h4>How does location-based emergency contacts work?</h4>
+                <p>Curio automatically detects your location and fetches the nearest emergency contacts including veterinary hospitals, animal control, and rescue organizations. You can also manually update your location if needed.</p>
+              </div>
             </div>
           </div>
         );
@@ -95,6 +218,9 @@ function App() {
           <ChatBot 
             onAnalysisUpdate={handleAnalysisUpdate}
             onTriageUpdate={handleTriageUpdate}
+            emergencyContacts={emergencyContacts}
+            locationStatus={locationStatus}
+            onRefreshContacts={refreshEmergencyContacts}
           />
         );
     }

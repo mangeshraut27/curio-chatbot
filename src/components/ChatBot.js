@@ -7,7 +7,13 @@ import NGOPanel from './NGOPanel';
 import openaiService from '../services/openai';
 import locationService from '../services/locationService';
 
-const ChatBot = ({ onAnalysisUpdate, onTriageUpdate }) => {
+const ChatBot = ({ 
+  onAnalysisUpdate, 
+  onTriageUpdate, 
+  emergencyContacts, 
+  locationStatus, 
+  onRefreshContacts 
+}) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -500,6 +506,8 @@ Original user message: "${inputText}"`;
         onActionClick={handleActionClick}
         onLocationHelp={handleLocationHelp}
         onResetConversation={handleNewConversation}
+        emergencyContacts={emergencyContacts}
+        locationStatus={locationStatus}
         phase="3"
       />
     </div>

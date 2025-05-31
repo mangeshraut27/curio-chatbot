@@ -1,7 +1,16 @@
 import React from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ reportData, onActionClick, phase, analysis, onResetConversation, onLocationHelp }) => {
+const Sidebar = ({ 
+  reportData, 
+  onActionClick, 
+  phase, 
+  analysis, 
+  onResetConversation, 
+  onLocationHelp,
+  emergencyContacts,
+  locationStatus 
+}) => {
   const careTips = [
     { icon: '⚠️', text: 'Approach with Caution', completed: false },
     { icon: '🛡️', text: 'Ensure Safety', completed: false },
@@ -36,23 +45,68 @@ const Sidebar = ({ reportData, onActionClick, phase, analysis, onResetConversati
     }
   ];
 
-  const emergencyContacts = [
-    { 
-      label: 'Local Animal Control', 
-      number: '555-0100',
-      icon: '🏛️'
-    },
-    { 
-      label: 'Emergency Vet Clinic', 
-      number: '555-0101',
-      icon: '🏥'
-    },
-    { 
-      label: 'Wildlife Rescue Hotline', 
-      number: '555-0102',
-      icon: '🦎'
+  // Use fetched emergency contacts or fallback to default ones
+  const getEmergencyContactsData = () => {
+    if (emergencyContacts?.emergencyContacts) {
+      return emergencyContacts.emergencyContacts.slice(0, 3).map(contact => ({
+        label: contact.name,
+        number: contact.phone,
+        icon: getContactIcon(contact.type),
+        type: contact.type,
+        availability: contact.availability,
+        is24x7: contact.is24x7,
+        urgencyLevel: contact.urgencyLevel,
+        description: contact.description
+      }));
     }
-  ];
+    
+    // Fallback to default contacts
+    return [
+      { 
+        label: 'Local Animal Control', 
+        number: '555-0100',
+        icon: '🏛️',
+        type: 'animal_control',
+        availability: '9 AM - 6 PM',
+        is24x7: false,
+        urgencyLevel: 'high',
+        description: 'Local municipal animal control services'
+      },
+      { 
+        label: 'Emergency Vet Clinic', 
+        number: '555-0101',
+        icon: '🏥',
+        type: 'veterinary',
+        availability: '24/7',
+        is24x7: true,
+        urgencyLevel: 'critical',
+        description: 'Emergency veterinary medical services'
+      },
+      { 
+        label: 'Wildlife Rescue Hotline', 
+        number: '555-0102',
+        icon: '🦎',
+        type: 'rescue_service',
+        availability: '10 AM - 8 PM',
+        is24x7: false,
+        urgencyLevel: 'medium',
+        description: 'Wildlife and exotic animal rescue'
+      }
+    ];
+  };
+
+  const getContactIcon = (type) => {
+    const icons = {
+      'government': '🏛️',
+      'animal_control': '🏛️',
+      'veterinary': '🏥',
+      'ngo': '🤝',
+      'rescue_service': '🦎'
+    };
+    return icons[type] || '📞';
+  };
+
+  const emergencyContactsData = getEmergencyContactsData();
 
   return (
     <div className="sidebar">
@@ -263,16 +317,77 @@ const Sidebar = ({ reportData, onActionClick, phase, analysis, onResetConversati
       {/* Phase 2: Enhanced Emergency Contacts */}
       <div className="sidebar-section">
         <h3>🆘 Emergency Contacts</h3>
+        
+        {/* Location Status Indicator */}
+        {locationStatus && (
+          <div className="location-status-indicator">
+            <div className="status-row">
+              <span className="status-icon">
+                {locationStatus === 'checking' && '🔄'}
+                {locationStatus === 'granted' && '✅'}
+                {locationStatus === 'estimated' && '📍'}
+                {locationStatus === 'error' && '❌'}
+              </span>
+              <span className="status-text">
+                {locationStatus === 'checking' && 'Detecting location...'}
+                {locationStatus === 'granted' && 'GPS location enabled'}
+                {locationStatus === 'estimated' && 'Using estimated location'}
+                {locationStatus === 'error' && 'Location unavailable'}
+              </span>
+            </div>
+            {emergencyContacts?.location && (
+              <div className="location-info">
+                📍 {emergencyContacts.location.detected}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="emergency-contacts">
-          {emergencyContacts.map((contact, index) => (
+          {emergencyContactsData.map((contact, index) => (
             <div key={index} className="contact-item">
               <div className="contact-header">
                 <span className="contact-icon">{contact.icon}</span>
-                <span className="contact-title">{contact.label}</span>
+                <div className="contact-title-group">
+                  <span className="contact-title">{contact.label}</span>
+                  {contact.is24x7 && (
+                    <span className="availability-badge emergency">24/7</span>
+                  )}
+                  {contact.urgencyLevel === 'critical' && (
+                    <span className="urgency-badge critical">CRITICAL</span>
+                  )}
+                </div>
               </div>
-              <div className="contact-number">{contact.number}</div>
+              <div className="contact-details">
+                <div className="contact-number">{contact.number}</div>
+                {contact.availability && !contact.is24x7 && (
+                  <div className="contact-hours">⏰ {contact.availability}</div>
+                )}
+                {contact.description && (
+                  <div className="contact-description">{contact.description}</div>
+                )}
+              </div>
+              <div className="contact-actions">
+                <button 
+                  className="contact-action-btn call"
+                  onClick={() => window.open(`tel:${contact.number}`, '_self')}
+                  title="Call this number"
+                >
+                  📞 Call
+                </button>
+              </div>
             </div>
           ))}
+
+          {/* AI Generation Status */}
+          {emergencyContacts && (
+            <div className="contacts-source">
+              <span className="source-icon">🤖</span>
+              <span className="source-text">
+                Contacts generated by AI for your location
+              </span>
+            </div>
+          )}
 
           {/* Phase 2: Smart Priority Indicator */}
           {analysis && analysis.rescueReport?.contactPriority && (

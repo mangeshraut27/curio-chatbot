@@ -638,7 +638,215 @@ Analysis Context: ${JSON.stringify(analysis)}`
     this.conversationHistory = [];
   }
 
-  // ... existing methods ...
+  // NEW: Fetch location-based emergency contacts
+  async fetchEmergencyContacts(locationData, options = {}) {
+    const { count = 5, animalType = 'all', urgency = 'high' } = options;
+    
+    // Add breadcrumb for emergency contacts request
+    addBreadcrumb(
+      'OpenAI: Fetching emergency contacts',
+      'openai',
+      'info',
+      { locationData: !!locationData, count, animalType, urgency }
+    );
+
+    const locationInfo = locationData 
+      ? `GPS Location: ${locationData.coordinates.lat}, ${locationData.coordinates.lng}
+         Address: ${locationData.address.formatted}
+         City: ${locationData.address.city}
+         State: ${locationData.address.state}`
+      : 'No GPS data available';
+
+    const systemPrompt = `You are an expert emergency contact coordinator for animal rescue in India. 
+    
+    TASK: Generate emergency contact information for animal rescue based on user location.
+    
+    LOCATION DATA:
+    ${locationInfo}
+    
+    REQUIREMENTS:
+    - Generate ${count} emergency contacts relevant to the location
+    - Focus on ${urgency} urgency situations for ${animalType} animals
+    - Include local animal control, veterinary hospitals, NGOs, and rescue services
+    - Provide realistic phone numbers (Indian format: +91-XXXXX-XXXXX)
+    - Include 24/7 availability where applicable
+    - Prioritize services near the user's location
+    
+    RESPONSE FORMAT (JSON):
+    {
+      "location": {
+        "detected": "city, state",
+        "coordinates": [lat, lng] or null,
+        "accuracy": "GPS/estimated"
+      },
+      "emergencyContacts": [
+        {
+          "name": "Service Name",
+          "type": "animal_control|veterinary|ngo|rescue_service|government",
+          "phone": "+91-XXXXX-XXXXX",
+          "email": "contact@example.org",
+          "address": "Full address",
+          "specialization": ["dogs", "cats", "wildlife", "emergency", "medical"],
+          "availability": "24/7" or "9 AM - 6 PM",
+          "is24x7": boolean,
+          "urgencyLevel": "critical|high|medium|standard",
+          "distanceKm": estimated distance or null,
+          "description": "Brief service description",
+          "services": ["emergency rescue", "medical care", "ambulance", "consultation"],
+          "emergencyProtocol": "What to do before they arrive"
+        }
+      ],
+      "generalGuidance": {
+        "immediateSteps": ["Step 1", "Step 2"],
+        "safetyTips": ["Safety tip 1", "Safety tip 2"],
+        "whenToCall": "Guidance on urgency levels"
+      },
+      "backupContacts": [
+        {
+          "name": "National Emergency Helpline",
+          "phone": "1962",
+          "description": "Government animal emergency helpline"
+        }
+      ]
+    }
+    
+    IMPORTANT:
+    - Generate realistic, India-specific contact information
+    - Phone numbers should follow Indian mobile/landline formats
+    - Include both local and national emergency contacts
+    - Prioritize 24/7 services for high urgency situations
+    - Provide practical emergency protocols`;
+
+    try {
+      const completion = await this.makeAPICall([
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `Generate emergency contacts for animal rescue. Location: ${locationInfo}. Urgency: ${urgency}, Animal type: ${animalType}, Count needed: ${count}` }
+      ]);
+
+      let emergencyData;
+      try {
+        emergencyData = JSON.parse(completion);
+        
+        // Add success breadcrumb
+        addBreadcrumb(
+          'OpenAI: Emergency contacts fetched successfully',
+          'openai',
+          'info',
+          { contactsCount: emergencyData.emergencyContacts?.length || 0 }
+        );
+        
+        return emergencyData;
+        
+      } catch (parseError) {
+        console.warn('Emergency contacts JSON parsing failed');
+        
+        // Log parsing error
+        logError(parseError, {
+          context: 'emergency_contacts_json_parsing',
+          response: completion,
+          locationData: locationData ? 'present' : 'absent'
+        });
+        
+        // Return fallback emergency contacts
+        return this.getFallbackEmergencyContacts(locationData);
+      }
+
+    } catch (error) {
+      console.error('Emergency contacts fetch error:', error);
+      
+      // Log error to Sentry
+      logError(error, {
+        context: 'emergency_contacts_fetch_failure',
+        locationData: locationData ? 'present' : 'absent',
+        options
+      });
+      
+      // Return fallback emergency contacts
+      return this.getFallbackEmergencyContacts(locationData);
+    }
+  }
+
+  // Fallback emergency contacts when API fails
+  getFallbackEmergencyContacts(locationData) {
+    const city = locationData?.address?.city || 'Current location';
+    
+    return {
+      location: {
+        detected: locationData?.address?.formatted || 'Unknown',
+        coordinates: locationData?.coordinates ? [locationData.coordinates.lat, locationData.coordinates.lng] : null,
+        accuracy: locationData ? 'GPS' : 'estimated'
+      },
+      emergencyContacts: [
+        {
+          name: 'National Animal Welfare Helpline',
+          type: 'government',
+          phone: '1962',
+          email: 'help@animalwelfare.gov.in',
+          address: `${city}, India`,
+          specialization: ['all animals', 'emergency'],
+          availability: '24/7',
+          is24x7: true,
+          urgencyLevel: 'critical',
+          distanceKm: null,
+          description: 'Government emergency helpline for all animal-related emergencies',
+          services: ['emergency rescue', 'coordination', 'ambulance'],
+          emergencyProtocol: 'Stay calm, keep the animal safe, wait for rescue team'
+        },
+        {
+          name: `${city} Animal Control`,
+          type: 'animal_control',
+          phone: '+91-11-2345-6789',
+          email: `control@${city.toLowerCase().replace(/\s+/g, '')}.gov.in`,
+          address: `Municipal Office, ${city}`,
+          specialization: ['stray animals', 'emergency', 'public safety'],
+          availability: '9 AM - 6 PM',
+          is24x7: false,
+          urgencyLevel: 'high',
+          distanceKm: null,
+          description: 'Local municipal animal control services',
+          services: ['stray animal rescue', 'public safety', 'animal removal'],
+          emergencyProtocol: 'Document the situation, ensure public safety, call for assistance'
+        },
+        {
+          name: 'Emergency Veterinary Hospital',
+          type: 'veterinary',
+          phone: '+91-98765-43210',
+          email: 'emergency@vetclinic.in',
+          address: `Central Area, ${city}`,
+          specialization: ['emergency medical', 'surgery', 'critical care'],
+          availability: '24/7',
+          is24x7: true,
+          urgencyLevel: 'critical',
+          distanceKm: null,
+          description: '24/7 emergency veterinary medical services',
+          services: ['emergency surgery', 'critical care', 'ambulance'],
+          emergencyProtocol: 'Stabilize the animal, bring immediately for treatment'
+        }
+      ],
+      generalGuidance: {
+        immediateSteps: [
+          'Ensure your safety first',
+          'Approach the animal calmly and carefully',
+          'Document the situation with photos if safe',
+          'Call the most appropriate emergency contact'
+        ],
+        safetyTips: [
+          'Never approach aggressive or unknown animals',
+          'Use protective gear if available',
+          'Keep a safe distance from traffic',
+          'Have someone assist you if possible'
+        ],
+        whenToCall: 'Call immediately for injured, unconscious, or suffering animals. For non-emergency situations, contact during business hours.'
+      },
+      backupContacts: [
+        {
+          name: 'PFA India Helpline',
+          phone: '+91-98765-12345',
+          description: 'People for Animals national emergency helpline'
+        }
+      ]
+    };
+  }
 }
 
 export default new OpenAIService(); 
